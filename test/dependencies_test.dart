@@ -9,9 +9,9 @@ main() {
   test('sample usage', () {
     registerDeps();
     final deps = Preset.use('test').override<InvoiceRepo>((deps) => DummyInvoiceRepo(deps.use<OfferRepo>()));
-    final repo = deps.use<ProjectRepo>();
-    print(repo.doStuff());
-    // expect('1', equals(2));
+    final repo = deps[ProjectRepo];
+    String res = repo.doStuff();
+    expect(res, equals('Project says hello, invoice says hello(dummy was here)'));
   });
 
   test('register a dep', () {
@@ -20,21 +20,27 @@ main() {
     expect(deps.use<OfferRepo>() is OfferRepoFake, isTrue);
   });
 
+  test('access via []', () {
+    final deps = Deps();
+    deps.register({OfferRepo: (deps) => OfferRepoFake()});
+    expect(deps[OfferRepo] is OfferRepoFake, isTrue);
+  });
+
   test('register two concerete implementations for one abstract type. Last wins.', () {
     final deps = Deps();
     deps.register({OfferRepo: (deps) => OfferRepoFake()});
     deps.register({OfferRepo: (deps) => OfferRepoFake2()});
 
-    expect(deps.use<OfferRepo>() is OfferRepoFake, isFalse);
-    expect(deps.use<OfferRepo>() is OfferRepoFake2, isTrue);
+    expect(deps[OfferRepo] is OfferRepoFake, isFalse);
+    expect(deps[OfferRepo] is OfferRepoFake2, isTrue);
   });
 
   test('override a dependency', () {
     final deps = Deps();
     deps.register({OfferRepo: (deps) => OfferRepoFake()});
     deps.override<OfferRepo>((deps) => OfferRepoFake2());
-    expect(deps.use<OfferRepo>() is OfferRepoFake, isFalse);
-    expect(deps.use<OfferRepo>() is OfferRepoFake2, isTrue);
+    expect(deps[OfferRepo] is OfferRepoFake, isFalse);
+    expect(deps[OfferRepo] is OfferRepoFake2, isTrue);
   });
 
   test('copy dependencies', () {
@@ -42,8 +48,8 @@ main() {
     deps.register({OfferRepo: (deps) => OfferRepoFake()});
     final copy = deps.copy();
     deps.register({OfferRepo: (deps) => OfferRepoFake2()});
-    expect(deps.use<OfferRepo>() is OfferRepoFake2, isTrue);
-    expect(copy.use<OfferRepo>() is OfferRepoFake, isTrue); // copy has still the old
+    expect(deps[OfferRepo] is OfferRepoFake2, isTrue);
+    expect(copy[OfferRepo] is OfferRepoFake, isTrue); // copy has still the old
   });
 
   // preset-land
@@ -51,7 +57,7 @@ main() {
   test('adding a default to environments', () {
     registerDeps();
     final deps = Preset.use('custom');
-    expect(deps.use<ReleaseRepo>() is ReleaseRepoFake, isTrue);
+    expect(deps[ReleaseRepo] is ReleaseRepoFake, isTrue);
   });
 
   test('Preset.of with id found', () {
@@ -65,17 +71,17 @@ main() {
   test('setting fallback', () {
     // nothing was registered on test, but it has the fallback prod
     final deps = Preset.use('test');
-    expect(deps.use<ProjectRepo>() is ProjectRepoFake, isTrue);
+    expect(deps[ProjectRepo] is ProjectRepoFake, isTrue);
   });
 
   test('my implemenation is prefered over the fallback', () {
     final deps = Preset.use('test');
-    expect(deps.use<ReleaseRepo>() is ReleaseRepoFake2, isTrue);
+    expect(deps[ReleaseRepo] is ReleaseRepoFake2, isTrue);
   });
 
   test('nearest implementation is preffered', () {
     final deps = Preset.use('dev');
-    expect(deps.use<OfferRepo>() is OfferRepoFake2, isTrue);
+    expect(deps[OfferRepo] is OfferRepoFake2, isTrue);
   });
 
   // Configuration
@@ -100,5 +106,17 @@ main() {
     expect(resIntEntry, equals(intEntry));
     expect(resDoubleEntry, equals(doubleEntry));
     expect(resCustomTypeEntry, equals(customTypeEntry));
+  });
+
+
+  test('config is cloned', () {
+    final deps = Deps();
+    deps.config['key'] = 'value';
+    final copy = deps.copy();
+    deps.config['key'] = 'new value';
+
+    expect(deps.config['key'], equals('new value'));
+    expect(copy.config['key'], equals('value'));
+
   });
 }

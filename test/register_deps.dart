@@ -12,10 +12,10 @@ registerDeps() {
 
 registerProjectDeps() {
   Preset.addDefaults(['prod', 'custom'], {
-    ProjectRepo: (deps) => ProjectRepoFake(deps.use<InvoiceRepo>(), deps.use<OfferRepo>(), deps.use<FileSystem>()),
+    ProjectRepo: (deps) => ProjectRepoFake(deps[InvoiceRepo], deps[OfferRepo], deps[FileSystem]),
     FileSystem: (deps) => FileSystemFake(),
     OfferRepo: (deps) => OfferRepoFake(),
-    InvoiceRepo: (deps) => InvoiceRepoFake(deps.use<OfferRepo>()),
+    InvoiceRepo: (deps) => InvoiceRepoFake(deps[OfferRepo]),
   });
   Preset.addDefaults(['custom'], {
     ReleaseRepo: (deps) => ReleaseRepoFake(),

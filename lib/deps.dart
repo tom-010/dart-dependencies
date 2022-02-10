@@ -1,9 +1,9 @@
 class Deps {
   final Map<Type, dynamic Function(Deps)> mappings;
-  final Map<String, dynamic> config = {};
+  final Map<String, dynamic> config;
 
-  Deps([final Map<Type, dynamic Function(Deps)>? mappings])
-    : mappings = mappings ?? {};
+  Deps({final Map<Type, dynamic Function(Deps)>? mappings, Map<String, dynamic>? config})
+    : mappings = mappings ?? {}, config = config ?? {};
 
   static Deps merge(Iterable<Deps> depsChain) {
     final res = Deps();
@@ -15,6 +15,11 @@ class Deps {
       }
     }
     return res;
+  }
+
+  dynamic operator[](Type T) {
+    assert(mappings.containsKey(T), "type $T not found in $mappings");
+    return mappings[T]!(this);
   }
 
   T use<T>() {
@@ -33,7 +38,7 @@ class Deps {
   }
 
   Deps copy() {
-    return Deps({...mappings});
+    return Deps(mappings: {...mappings}, config: {...config});
   }
 }
 
