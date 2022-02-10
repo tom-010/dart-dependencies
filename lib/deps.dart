@@ -1,12 +1,13 @@
-class Dependencies {
-  final Map<Type, dynamic Function(Dependencies)> mappings;
+class Deps {
+  final Map<Type, dynamic Function(Deps)> mappings;
+  final Map<String, dynamic> config = {};
 
-  Dependencies([final Map<Type, dynamic Function(Dependencies)>? mappings])
+  Deps([final Map<Type, dynamic Function(Deps)>? mappings])
     : mappings = mappings ?? {};
 
-  static Dependencies merge(Iterable<Dependencies> depsChain) {
-    final res = Dependencies();
-    for(Dependencies deps in depsChain) {
+  static Deps merge(Iterable<Deps> depsChain) {
+    final res = Deps();
+    for(Deps deps in depsChain) {
       for(Type t in deps.mappings.keys) {
         if(!res.mappings.containsKey(t)) {
           res.mappings[t] = deps.mappings[t]!;
@@ -21,18 +22,18 @@ class Dependencies {
     return mappings[T]!(this);
   }
 
-  Dependencies override<T>(T Function(Dependencies deps) builder) {
+  Deps override<T>(T Function(Deps deps) builder) {
     assert(mappings.containsKey(T), "$T not known. Use register");
     mappings[T] = builder;
     return this;
   }
 
-  register(Map<Type, dynamic Function(Dependencies deps)> mappings) {
+  register(Map<Type, dynamic Function(Deps deps)> mappings) {
     this.mappings.addAll(mappings);
   }
 
-  Dependencies copy() {
-    return Dependencies({...mappings});
+  Deps copy() {
+    return Deps({...mappings});
   }
 }
 
@@ -40,7 +41,7 @@ class Preset {
 
   static final Map<String, Preset> _presets = {};
 
-  static addDefaults(List<String> configurations, Map<Type, dynamic Function(Dependencies deps)> mappings) {
+  static addDefaults(List<String> configurations, Map<Type, dynamic Function(Deps deps)> mappings) {
     for(final String config in configurations) {
       Preset.of(config)._deps.register(mappings);
     }
@@ -53,26 +54,26 @@ class Preset {
     return _presets[id]!;
   }
 
-  static Dependencies use(String id) {
+  static Deps use(String id) {
     return Preset.of(id).deps;
   }
 
   // ==== dynamic area ======
 
   final String id;
-  final Dependencies _deps = Dependencies();
+  final Deps _deps = Deps();
   Preset? parent;
 
   Preset(this.id);
 
-  Dependencies get deps {
+  Deps get deps {
     List<Preset> chain = [];
     Preset? current = this;
     while(current != null) {
       chain.add(current);
       current = current.parent;
     }
-    return Dependencies.merge(chain.map((preset) => preset._deps));
+    return Deps.merge(chain.map((preset) => preset._deps));
   }
 
   fallsBackTo(String id) {
