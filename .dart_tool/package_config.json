@@ -1,0 +1,14 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "dependencies",
+      "rootUri": "../",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    }
+  ],
+  "generated": "2022-02-10T09:27:20.453851Z",
+  "generator": "pub",
+  "generatorVersion": "2.15.1"
+}

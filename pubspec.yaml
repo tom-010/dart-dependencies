@@ -1,0 +1,6 @@
+name: dependencies
+version: 0.0.1
+description: Simple, flexible and opinionated Dependency Injection
+repository: https://github.com/tom-010/dart-dependencies
+environment: 
+  sdk: ">=2.14.0 <3.0.0"
