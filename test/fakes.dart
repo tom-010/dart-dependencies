@@ -55,7 +55,13 @@ class InvoiceRepoFake extends InvoiceRepo with FakeRepoMixin<Invoice> {
 class OfferRepoFake extends OfferRepo with FakeRepoMixin<Offer> {
 }
 
+class OfferRepoFake2 extends OfferRepo with FakeRepoMixin<Offer> {
+}
+
 class ReleaseRepoFake extends ReleaseRepo with FakeRepoMixin<Release> {
+}
+
+class ReleaseRepoFake2 extends ReleaseRepo with FakeRepoMixin<Release> {
 }
 
 class FileSystemFake extends FileSystem {

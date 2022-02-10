@@ -1,7 +1,3 @@
-class Config {
-
-}
-
 class Dependencies {
   final Map<Type, dynamic Function(Dependencies)> mappings;
 
