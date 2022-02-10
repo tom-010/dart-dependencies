@@ -1,4 +1,4 @@
-name: dependencies
+name: deps
 version: 0.0.1
 description: Simple, flexible and opinionated Dependency Injection
 repository: https://github.com/tom-010/dart-dependencies

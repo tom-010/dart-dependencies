@@ -1,5 +1,5 @@
 
-import 'package:dependencies/dependencies.dart';
+import 'package:deps/deps.dart';
 import 'package:test/test.dart';
 import 'fakes.dart';
 import 'register_deps.dart';

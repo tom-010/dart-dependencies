@@ -1,5 +1,7 @@
 
-import 'package:dependencies/dependencies.dart';
+
+
+import 'package:deps/deps.dart';
 
 import 'fakes.dart';
 import 'repos.dart';
