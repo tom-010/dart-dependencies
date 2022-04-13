@@ -1,3 +1,7 @@
+T locate<T>(String preset) {
+  return Preset.use(preset).use<T>();
+}
+
 class Deps {
   final Map<Type, dynamic Function(Deps)> mappings;
   final Map<String, dynamic> config;

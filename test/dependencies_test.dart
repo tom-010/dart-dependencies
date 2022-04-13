@@ -74,6 +74,8 @@ main() {
     expect(deps[ProjectRepo] is ProjectRepoFake, isTrue);
   });
 
+
+
   test('my implemenation is prefered over the fallback', () {
     final deps = Preset.use('test');
     expect(deps[ReleaseRepo] is ReleaseRepoFake2, isTrue);
@@ -82,6 +84,10 @@ main() {
   test('nearest implementation is preffered', () {
     final deps = Preset.use('dev');
     expect(deps[OfferRepo] is OfferRepoFake2, isTrue);
+  });
+
+  test('locate is a shortcut', () {
+    expect(locate<ReleaseRepo>('test') is ReleaseRepoFake2, isTrue);
   });
 
   // Configuration
@@ -117,6 +123,7 @@ main() {
 
     expect(deps.config['key'], equals('new value'));
     expect(copy.config['key'], equals('value'));
-
   });
+
+
 }
